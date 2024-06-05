@@ -29,24 +29,24 @@ public static class FileHandler
         filePath = levelPath;
     }
 
-    // public static void ChangeLevel()
-    // {
-    //     levelNumber++;
+    public static void ChangeLevel()
+    {
+        levelNumber++;
 
-    //     if (levelNumber > 3)
-    //     {
-    //         levelNumber = 1;
-    //         levelPath = "../Level" + levelNumber + ".json";
-    //         filePath = levelPath;
-    //         ReadJson();
-    //     }
-    //     else
-    //     {
-    //         levelPath = "../Level" + levelNumber + ".json";
-    //         filePath = levelPath;
-    //         ReadJson();
-    //     }
-    // }
+        if (levelNumber > 2)
+        {
+            levelNumber = 1;
+            levelPath = "../Level" + levelNumber + ".json";
+            filePath = levelPath;
+            ReadJson();
+        }
+        else
+        {
+            levelPath = "../Level" + levelNumber + ".json";
+            filePath = levelPath;
+            ReadJson();
+        }
+    }
 
     public static dynamic ReadJson()
     {
