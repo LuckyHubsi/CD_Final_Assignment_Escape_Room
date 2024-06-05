@@ -19,9 +19,6 @@ class Program
         var engine = GameEngine.Instance;
         var inputHandler = InputHandler.Instance;
 
-         // Define the frame rate (e.g., 60 FPS)
-        int frameRate = 60;
-        TimeSpan frameInterval = TimeSpan.FromSeconds(1.0 / frameRate);
         while (true) {
 
             engine.Setup();
@@ -30,7 +27,6 @@ class Program
             // Main game loop
             while (true)
             {
-                DateTime startTime = DateTime.Now;
 
                 engine.Render();
 
@@ -45,20 +41,9 @@ class Program
                     Console.ReadKey(true);
                     goto Start;
                 }
-
-                // Wait until the end of the frame
-                TimeSpan elapsedTime = DateTime.Now - startTime;
-                TimeSpan sleepTime = frameInterval - elapsedTime;
-                if (sleepTime > TimeSpan.Zero)
-                {
-                    Thread.Sleep(sleepTime);
-                }
-                //Handle keyboard input
-                if (Console.KeyAvailable)
-                {
-                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-                    inputHandler.Handle(keyInfo);
-                }
+               
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                inputHandler.Handle(keyInfo);
             }
         }
     }

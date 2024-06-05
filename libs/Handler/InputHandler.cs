@@ -33,11 +33,6 @@ public sealed class InputHandler{
             
             engine.StoreMap();
 
-            // if(keyInfo.Key == ConsoleKey.S && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control)) {
-            //     engine.SaveGame();
-            //     return;
-            // }
-
             // Handle keyboard input to move the player
             switch (keyInfo.Key)
             {

@@ -90,8 +90,6 @@ public sealed class GameEngine
 
     private bool characterCreated = false;
 
-    private int countDown = 30;
-    private bool countdownTask;
 
     private DialogWindow dialog;
 
@@ -127,15 +125,6 @@ public sealed class GameEngine
 
         dialog.Draw(" How to play ", "Use the arrow keys to move around. The goal is to get the key to the door before the timer runs out. Good Luck! Press any key to start...");
         Console.ReadKey(true);
-
-        // Reset countdown timer
-        countDown = 30;
-
-        if (!countdownTask)
-        {
-            Task.Run(() => CountDown());
-            countdownTask = true;
-        }
     }
    
     public void Render() {
@@ -143,31 +132,23 @@ public sealed class GameEngine
         //Clean the map
         Console.Clear();
 
-        if(countDown > 0){
-        
-      
-        Console.WriteLine($"Time left: {countDown} seconds");
-
         map.Initialize();
 
         PlaceGameObjects();
 
         //Render the map
-        for (int i = 0; i < map.MapHeight; i++)
-        {
-            for (int j = 0; j < map.MapWidth; j++)
-            {
+        for (int i = 0; i < map.MapHeight; i++){
+            for (int j = 0; j < map.MapWidth; j++){
                 DrawObject(map.Get(i, j));
             }
             Console.WriteLine();
         }
-        } 
+       
         dialog.Draw(" Hints ", "Not available yet...");
     }
     
     // Method to create GameObject using the factory from clients
-    public GameObject CreateGameObject(dynamic obj)
-    {
+    public GameObject CreateGameObject(dynamic obj){
         return gameObjectFactory.CreateGameObject(obj);
     }
 
@@ -210,32 +191,17 @@ public sealed class GameEngine
 
     public void WinLevel() {
         dialog.Draw(" Congratulations  ", "You have completed this level. Press any key to restart...");
-        countDown = 30;
     }
 
     public bool LoseCheck() {
-        if(countDown < 0){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public void LoseLevel(){
         dialog.Draw(" Better luck next time  ", "Too bad, your time ran out. Press any key to restart...");
-        countDown = 30;
-        countdownTask = false;
+       
     }
 
-    public void CountDown()
-    {
-        while (countDown != -1)
-        {
-            Thread.Sleep(1000); // Wait for 1 second
-            countDown--;
-        }
-    }    
 
     public void InitializeDialogWindow()
     {
