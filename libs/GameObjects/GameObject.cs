@@ -1,6 +1,6 @@
 ﻿namespace libs;
 
-public class GameObject : IMovement
+public class GameObject : IGameObject, IMovement, ICloneable
 {
     private char _charRepresentation = '#';
     private ConsoleColor _color;
@@ -15,7 +15,7 @@ public class GameObject : IMovement
 
     public GameObject() {
         this._posX = 5;
-        this._posY = 0;
+        this._posY = 5;
         this._color = ConsoleColor.Gray;
     }
 
@@ -62,37 +62,14 @@ public class GameObject : IMovement
         return _prevPosX;
     }
 
-    //DIALOG STUFF
-    public Dialog? dialog;
-
-    protected List<DialogNode> dialogNodes = new List<DialogNode>();
-
     public void Move(int dx, int dy) {
-        
-        int targetX = _posX + dx;
-        int targetY = _posY + dy;
-
-        //Use LINQ to query objects in target Position.
-        var collisionObjects = GameEngine.GetGameObjects()
-        .Where(e => e.PosX == targetX && e.PosY == targetY);
-
-        //If no Obstacles found --> MOVE
-        if(collisionObjects.Count() == 0){
-            _prevPosX = _posX;
-            _prevPosY = _posY;
-            _posX += dx;
-            _posY += dy;
-        }
-        //Otherwise start dialog if exists
-        else
-        {
-            if(collisionObjects.First().HasDialog()){
-                collisionObjects.First().dialog.Start();
-            }
-        }
+        _prevPosX = _posX;
+        _prevPosY = _posY;
+        _posX += dx;
+        _posY += dy;
     }
 
-    public bool HasDialog(){
-        return (dialog == null) ? false : true;
+    public object Clone() {
+        return this.MemberwiseClone();
     }
 }

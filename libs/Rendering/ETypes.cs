@@ -1,5 +1,9 @@
 public enum GameObjectType
 {
-  Queen,
-  King
+  Player,
+  Wall,
+  Box,
+  Floor,
+  Door,
+  Key
 }
