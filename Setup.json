@@ -1,0 +1,27 @@
+{
+    "map": {
+      "width": 10,
+      "height": 8 
+    },
+    "gameObjects": [
+      {
+        "Type": 1,
+        "Color": 2,
+        "PosX": 4,
+        "PosY": 7
+      },
+      {
+        "Type": 0,
+        "Color": 5,
+        "PosX": 2,
+        "PosY": 1,
+        "CharRepresentation": "♘"
+      },
+      {
+        "Type": 1,
+        "Color": 6,
+        "PosX": 2,
+        "PosY": 2
+      }
+    ]
+  }
