@@ -101,8 +101,6 @@ public sealed class GameEngine
         _focusedObject = gameObjects.OfType<Player>().First();
         StoreMap();
 
-        InitializeDialogWindow();
-
         Render();
         string tutorialMessage = FileHandler.GetDialog("TutorialMessage");
         string tutorialHeader = FileHandler.GetDialog("TutorialHeader");
