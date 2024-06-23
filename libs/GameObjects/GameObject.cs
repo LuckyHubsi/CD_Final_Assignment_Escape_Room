@@ -73,7 +73,6 @@ public class GameObject : IGameObject, IMovement, ICloneable
         return this.MemberwiseClone();
     }
 
-    //DIALOG STUFF
     public Dialog? dialog;
 
     protected List<DialogNode> dialogNodes = new List<DialogNode>();

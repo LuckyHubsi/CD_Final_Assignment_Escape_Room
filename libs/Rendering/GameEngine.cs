@@ -8,11 +8,12 @@ using Newtonsoft.Json;
 
 public sealed class GameEngine
 {
-    private static GameEngine? _instance;
-    private IGameObjectFactory gameObjectFactory;
+    private static GameEngine? _instance; // Singleton instance of GameEngine
+    private IGameObjectFactory gameObjectFactory; // Factory for creating GameObjects
 
-    private bool lastLevelCheck = false;
+    private bool lastLevelCheck = false; // Flag to check if it's the last level
 
+    // Singleton property to get the instance of GameEngine
     public static GameEngine Instance {
         get{
             if(_instance == null)
@@ -23,28 +24,26 @@ public sealed class GameEngine
         }
     }
 
+    // Private constructor to prevent external instantiation
     private GameEngine() {
-        //INIT PROPS HERE IF NEEDED
+        // Initialize properties if needed
         gameObjectFactory = new GameObjectFactory();
     }
 
-    private GameObject? _focusedObject;
+    private GameObject? _focusedObject; // The currently focused GameObject
 
-    private Map map = new Map();
+    private Map map = new Map(); // The game map
 
-    public List<GameObject> gameObjects = new List<GameObject>();
+    public List<GameObject> gameObjects = new List<GameObject>(); // List of all GameObjects in the game
 
-    // In a linked list: 1 object always shows to the next and the previous object
-    // -> insertion & deletion is easier -> no need to shift elements after insertion/deletion & easier locatable, even after
+    // Linked list of snapshots of game objects for undo functionality
     private LinkedList<List<GameObject>> gameObjectSnapshots = new LinkedList<List<GameObject>>();
 
+    // Method to store the current state of the map
     public void StoreMap() {
-
-        // new list with gameobject clones
-        // 1 list represents one snapshot of game
         List<GameObject> gameObjectClones = new List<GameObject>();
 
-        // create clone for each original gameobject of original list -> dont want to effect original object
+        // Create clones of all GameObjects to store the current state
         foreach (GameObject gameObject in gameObjects) {
             gameObjectClones.Add((GameObject) gameObject.Clone());
         }
@@ -52,39 +51,39 @@ public sealed class GameEngine
         gameObjectSnapshots.AddLast(gameObjectClones);
     }
 
+    // Method to restore the map to the previous state
     public void RestoreMap() {
-
-        // at beginning of game wihtout any move made it obv cant restore
         if (gameObjectSnapshots.Count <= 0) return;
 
         gameObjects = gameObjectSnapshots.Last!.Value;
         gameObjectSnapshots.RemoveLast();
 
-        // cloned player isnt the actual player, its just a clone -> "promote" clone to original player
+        // Promote the cloned player to the focused object
         _focusedObject = gameObjects.OfType<Player>().First();
     }
 
+    // Method to get the map
     public Map GetMap() {
         return map;
     }
 
+    // Method to get the currently focused GameObject
     public GameObject GetFocusedObject(){
         return _focusedObject;
     }
 
-    private bool characterCreated = false;
+    private bool characterCreated = false; // Flag to check if the character is created
 
+    private DialogWindow dialog; // Dialog window for displaying messages
 
-    private DialogWindow dialog;
-
+    // Method to set up the game
     public void Setup(){
         gameObjects.Clear();
         gameObjectSnapshots.Clear();
         map = new Map();
         characterCreated = false;
 
-
-        //Added for proper display of game characters
+        // Set console output encoding for proper display of characters
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
         dynamic gameData = FileHandler.ReadJson();  
@@ -92,6 +91,7 @@ public sealed class GameEngine
         map.MapWidth = gameData.map.width;
         map.MapHeight = gameData.map.height;
 
+        // Add GameObjects to the map based on the JSON data
         foreach (var gameObject in gameData.gameObjects)
         {
             if(!characterCreated || gameObject.Type != 0){
@@ -110,16 +110,15 @@ public sealed class GameEngine
         Console.ReadKey(true);
     }
    
+    // Method to render the game
     public void Render() {
+        Console.Clear(); // Clear the console
 
-        //Clean the map
-        Console.Clear();
+        map.Initialize(); // Initialize the map
 
-        map.Initialize();
+        PlaceGameObjects(); // Place GameObjects on the map
 
-        PlaceGameObjects();
-
-        //Render the map
+        // Render the map
         for (int i = 0; i < map.MapHeight; i++){
             for (int j = 0; j < map.MapWidth; j++){
                 DrawObject(map.Get(i, j));
@@ -127,6 +126,7 @@ public sealed class GameEngine
             Console.WriteLine();
         }
 
+        // Display hints
         string hintsHeader = FileHandler.GetDialog("HintsHeader");
         string hintsMessage = FileHandler.GetDialog("HintsMessage");
         dialog.Draw(" " + hintsHeader + " ",hintsMessage);
@@ -137,20 +137,21 @@ public sealed class GameEngine
         return gameObjectFactory.CreateGameObject(obj);
     }
 
+    // Method to add a GameObject to the game
     public void AddGameObject(GameObject gameObject){
         gameObjects.Add(gameObject);
     }
 
+    // Method to place GameObjects on the map
     private void PlaceGameObjects(){
-        
         gameObjects.ForEach(delegate(GameObject obj)
         {
             map.Set(obj);
         });
     }
 
+    // Method to draw a GameObject on the console
     private void DrawObject(GameObject gameObject){
-        
         Console.ResetColor();
 
         if(gameObject != null)
@@ -164,6 +165,7 @@ public sealed class GameEngine
         }
     }
 
+    // Method to show the main menu
     public void ShowMainMenu() {
         if (!lastLevelCheck){
             InitializeDialogWindow();
@@ -182,6 +184,7 @@ public sealed class GameEngine
         }
     }
 
+    // Method to check if the player has won the level
     public bool WinCheck() {
         if (!gameObjects.OfType<Door>().Any()) {
             return true;   
@@ -191,6 +194,7 @@ public sealed class GameEngine
         }
     }
 
+    // Method to handle winning the level
     public void WinLevel() {
         FileHandler.ChangeLevel();
         string winMessage = FileHandler.GetDialog("WinMessage");
@@ -203,10 +207,12 @@ public sealed class GameEngine
         else lastLevelCheck = true;
     }
 
+    // Method to check if the player has lost the level
     public bool LoseCheck() {
         return false;
     }
 
+    // Method to handle losing the level
     public void LoseLevel(){
         string loseHeader = FileHandler.GetDialog("LoseHeader");
         string loseMessage = FileHandler.GetDialog("LoseMessage");
@@ -214,16 +220,18 @@ public sealed class GameEngine
        
     }
 
+    // Method to initialize the dialog window in the correct size
     public void InitializeDialogWindow()
     {
         int dialogWidth = 35;
         int dialogHeight = 10;
-        int dialogX = 10; // Adjust the X position as needed
-        int dialogY = Math.Min(Console.BufferHeight - dialogHeight - 1, 1); // Adjust Y position
+        int dialogX = 10;
+        int dialogY = Math.Min(Console.BufferHeight - dialogHeight - 1, 1);
 
         dialog = new DialogWindow(dialogWidth, dialogHeight, dialogX, dialogY);
     }
 
+    // Method to start the dialog with the witch
     public void DialogWitch(){
         Witch.dialog.Start();
     }

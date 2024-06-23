@@ -1,12 +1,14 @@
 namespace libs;
 
-public sealed class InputHandler{
+// Singleton class to handle input from the console
+public sealed class InputHandler
+{
+    private static InputHandler? _instance; // Singleton instance of InputHandler
+    private GameEngine engine; // Reference to the GameEngine instance
 
-    private static InputHandler? _instance;
-    private GameEngine engine;
-
+    // Singleton property to get the single instance of InputHandler
     public static InputHandler Instance {
-        get{
+        get {
             if(_instance == null)
             {
                 _instance = new InputHandler();
@@ -15,17 +17,21 @@ public sealed class InputHandler{
         }
     }
 
+    // Private constructor to prevent direct instantiation
     private InputHandler() {
-        //INIT PROPS HERE IF NEEDED
+        // Initialize properties if needed
         engine = GameEngine.Instance;
     }
 
+    // Method to handle console key input
     public void Handle(ConsoleKeyInfo keyInfo)
     {
+        // Get the currently focused object (player)
         GameObject focusedObject = engine.GetFocusedObject();
 
         if (focusedObject != null) {
 
+            // Handle undo action (Ctrl + Z)
             if(keyInfo.Key == ConsoleKey.Z && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control)) {
                 engine.RestoreMap();
                 return;
@@ -37,20 +43,20 @@ public sealed class InputHandler{
             switch (keyInfo.Key)
             {
                 case ConsoleKey.UpArrow:
-                    focusedObject.CharRepresentation = '▲';
-                    CollisionSituation(focusedObject, 0, -1);
+                    focusedObject.CharRepresentation = '▲'; // Change character representation
+                    CollisionSituation(focusedObject, 0, -1); // Move up
                     break;
                 case ConsoleKey.DownArrow:
-                    focusedObject.CharRepresentation = '▼';
-                    CollisionSituation(focusedObject, 0, 1);
+                    focusedObject.CharRepresentation = '▼'; // Change character representation
+                    CollisionSituation(focusedObject, 0, 1); // Move down
                     break;
                 case ConsoleKey.LeftArrow:
-                    focusedObject.CharRepresentation = '◄';
-                    CollisionSituation(focusedObject, -1, 0);
+                    focusedObject.CharRepresentation = '◄'; // Change character representation
+                    CollisionSituation(focusedObject, -1, 0); // Move left
                     break;
                 case ConsoleKey.RightArrow:
-                    focusedObject.CharRepresentation = '►';
-                    CollisionSituation(focusedObject, 1, 0);
+                    focusedObject.CharRepresentation = '►'; // Change character representation
+                    CollisionSituation(focusedObject, 1, 0); // Move right
                     break;
                 default:
                     break;
@@ -58,76 +64,67 @@ public sealed class InputHandler{
 
         }
 
+        // Method to handle collision situations
         void CollisionSituation(GameObject player, int dx, int dy)
         {
-            int nextPlayerPosX = player.PosX + dx;
-            int nextPlayerPosY = player.PosY + dy;
+            int nextPlayerPosX = player.PosX + dx; // Calculate next X position
+            int nextPlayerPosY = player.PosY + dy; // Calculate next Y position
 
-            // get object at next position to which player moves
+            // Get the object at the next position
             GameObject nextObject = engine.GetMap().Get(nextPlayerPosY, nextPlayerPosX);
 
-
-    // PLAYER hits BOX
-
+            // PLAYER hits BOX
             if (nextObject is Box box) {
-                // calculate next position of box
+                // Calculate next position of the box
                 int nextBoxPosX = box.PosX + dx;
                 int nextBoxPosY = box.PosY + dy;
 
-                // position behind original box position = position box will be moved to -> is there an obstacle?
+                // Get the position behind the box
                 GameObject posBehindBox = engine.GetMap().Get(nextBoxPosY, nextBoxPosX);
 
-
-    // BOX hits OBSTACLE
-
+                // BOX hits OBSTACLE
                 if (posBehindBox is ICollidable) {
-                    engine.RestoreMap();
+                    engine.RestoreMap(); // Restore the map if there is an obstacle
                 }
                 else {
-                    box.Move(dx, dy);
-                    player.Move(dx, dy);
+                    box.Move(dx, dy); // Move the box
+                    player.Move(dx, dy); // Move the player
                 }
             }
 
-    // PLAYER hits KEY
-
+            // PLAYER hits KEY
             else if (nextObject is Key key) {
                 int nextKeyPosX = key.PosX + dx;
                 int nextKeyPosY = key.PosY + dy;
                 GameObject posBehindKey = engine.GetMap().Get(nextKeyPosY, nextKeyPosX);
 
-    // KEY hits OBSTACLE
-
+                // KEY hits OBSTACLE
                 if (posBehindKey is Wall or Box) {
-                    engine.RestoreMap();
+                    engine.RestoreMap(); // Restore the map if there is an obstacle
                 }
 
-    // KEY hits DOOR
-
+                // KEY hits DOOR
                 else if (posBehindKey is Door) {
-                    engine.gameObjects.RemoveAll(obj => obj is Door or Key);
+                    engine.gameObjects.RemoveAll(obj => obj is Door or Key); // Remove all doors and keys
                 }
                 else {
-                    key.Move(dx, dy);
-                    player.Move(dx, dy);
+                    key.Move(dx, dy); // Move the key
+                    player.Move(dx, dy); // Move the player
                 }
                 
             }
 
-    // PLAYER hits WALL or DOOR
-
+            // PLAYER hits WALL or DOOR
             else if (nextObject is Wall or Door) {
-                // player cant move forward
-                engine.RestoreMap();
+                engine.RestoreMap(); // Restore the map if there is a wall or door
             }
 
-    // PLAYER hits WITCH
-
-            else if (nextObject is Witch){
-                engine.DialogWitch();
+            // PLAYER hits WITCH
+            else if (nextObject is Witch) {
+                engine.DialogWitch(); // Start dialog with the witch
             }
             else {
-                player.Move(dx, dy);
+                player.Move(dx, dy); // Move the player if there is no obstacle
             }
         }
         
