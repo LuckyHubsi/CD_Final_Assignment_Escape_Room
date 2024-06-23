@@ -81,4 +81,8 @@ public static class FileHandler
             throw new Exception($"Error reading messages JSON file: {ex.Message}");
         }
     }
+
+    public static int GetLevelNumber(){
+        return levelNumber;
+    }
 }

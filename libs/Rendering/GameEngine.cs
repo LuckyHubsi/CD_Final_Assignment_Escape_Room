@@ -11,6 +11,8 @@ public sealed class GameEngine
     private static GameEngine? _instance;
     private IGameObjectFactory gameObjectFactory;
 
+    private bool lastLevelCheck = false;
+
     public static GameEngine Instance {
         get{
             if(_instance == null)
@@ -163,23 +165,24 @@ public sealed class GameEngine
     }
 
     public void ShowMainMenu() {
-        InitializeDialogWindow();
-        Console.Clear();
+        if (!lastLevelCheck){
+            InitializeDialogWindow();
+            Console.Clear();
 
-        string mainMenuHeader = FileHandler.GetDialog("MainMenuHeader");
-        string mainMenuMessage = FileHandler.GetDialog("MainMenuMessage");
-        dialog.Draw(" " + mainMenuHeader + " ", mainMenuMessage);
+            string mainMenuHeader = FileHandler.GetDialog("MainMenuHeader");
+            string mainMenuMessage = FileHandler.GetDialog("MainMenuMessage");
+            dialog.Draw(" " + mainMenuHeader + " ", mainMenuMessage);
 
-        while (true) {
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-            if (keyInfo.Key == ConsoleKey.Enter) {
-                break;
+            while (true) {
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                if (keyInfo.Key == ConsoleKey.Enter) {
+                    break;
+                }
             }
         }
     }
 
     public bool WinCheck() {
-
         if (!gameObjects.OfType<Door>().Any()) {
             return true;   
         }
@@ -193,6 +196,11 @@ public sealed class GameEngine
         string winMessage = FileHandler.GetDialog("WinMessage");
         string winHeader = FileHandler.GetDialog("WinHeader");
         dialog.Draw(" " + winHeader + " ", winMessage);
+
+        if (FileHandler.GetLevelNumber() == 1){
+            lastLevelCheck = false;
+        }
+        else lastLevelCheck = true;
     }
 
     public bool LoseCheck() {
