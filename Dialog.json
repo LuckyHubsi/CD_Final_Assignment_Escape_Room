@@ -9,7 +9,7 @@
   "LoseMessage": "Better luck next time! Too bad, your time ran out. Press any key to restart...",
 
   "TutorialHeader": "How to Play",
-  "TutorialMessage": "Use the arrow keys to move around. The goal is to get the key to the door before the timer runs out. Good Luck! Press any key to start...",
+  "TutorialMessage": "Use the arrow keys to move around. The goal is to get the key to the door. Good Luck! Press any key to start...",
 
   "HintsHeader": "Hints",
   "HintsMessage": "Control + Z to undo your last move!",
