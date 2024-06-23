@@ -6,9 +6,9 @@ class Program
     {
         //Jump point for the goto in the win/lose
         Start:
-        if (Console.WindowWidth < 40 || Console.WindowHeight < 12)
+        if (Console.WindowWidth < 40 || Console.WindowHeight < 18)
         {
-            Console.WriteLine("Please resize the console window to at least 40x12 and run the application again.");
+            Console.WriteLine("Please resize the console window to at least 40x18 and run the application again.");
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
             return;
