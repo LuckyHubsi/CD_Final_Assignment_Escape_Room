@@ -1,11 +1,12 @@
 namespace libs;
 
 public class Witch : GameObject, ICollidable {
+    public static Dialog dialog; // Change to static to access it in GameEngine
+
     public Witch () : base() {
         this.Type = GameObjectType.Wall;
         this.CharRepresentation = 'W';
         this.Color = ConsoleColor.Cyan;
-
 
         DialogNode node1 = new DialogNode(FileHandler.GetDialog("WitchMessage1"));
         DialogNode node2 = new DialogNode(FileHandler.GetDialog("WitchMessage2-L"));
@@ -13,10 +14,6 @@ public class Witch : GameObject, ICollidable {
 
         node1.AddResponse(FileHandler.GetDialog("Msg1-L"), node2);
         node1.AddResponse(FileHandler.GetDialog("Msg1-R"), node3);
-
-        dialogNodes.Add(node1);
-        dialogNodes.Add(node2);
-        dialogNodes.Add(node3);
 
         dialog = new Dialog(node1);
     }
