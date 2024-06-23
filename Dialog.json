@@ -14,6 +14,11 @@
   "HintsHeader": "Hints",
   "HintsMessage": "Control + Z to undo your last move!",
 
-  "WitchHeader": "Witch:",
-  "WitchMessage": "You will never escape this room!"
+  "WitchHeader1": "Witch:",
+  "WitchMessage1": "What? How did you get into my house?",
+  "Msg1-L": "I found a key outside.",
+  "Msg1-R": "I am not telling you.",
+  
+  "WitchMessage2-L": "I knew I lost it somewhere! Anyways, prepare to be my next potion ingredient!",
+  "WitchMessage2-R": "I see how this is, prepare to be my next potion ingredient!"
 }
