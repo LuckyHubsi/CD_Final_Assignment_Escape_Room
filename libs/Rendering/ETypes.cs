@@ -5,5 +5,6 @@ public enum GameObjectType
   Box,
   Floor,
   Door,
-  Key
+  Key,
+  Witch
 }

@@ -25,6 +25,9 @@ public class GameObjectFactory : IGameObjectFactory
             case (int) GameObjectType.Key:
                 newObj = obj.ToObject<Key>();
                 break;
+            case (int) GameObjectType.Witch:
+                newObj = obj.ToObject<Witch>();
+                break;
         }
 
         return newObj;

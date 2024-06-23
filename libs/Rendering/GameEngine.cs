@@ -214,7 +214,6 @@ public sealed class GameEngine
        
     }
 
-
     public void InitializeDialogWindow()
     {
         int dialogWidth = 35;
@@ -223,5 +222,9 @@ public sealed class GameEngine
         int dialogY = Math.Min(Console.BufferHeight - dialogHeight - 1, 1); // Adjust Y position
 
         dialog = new DialogWindow(dialogWidth, dialogHeight, dialogX, dialogY);
+    }
+
+    public void DialogWitch(){
+        Witch.dialog.Start();
     }
 }

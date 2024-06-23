@@ -120,6 +120,12 @@ public sealed class InputHandler{
                 // player cant move forward
                 engine.RestoreMap();
             }
+
+    // PLAYER hits WITCH
+
+            else if (nextObject is Witch){
+                engine.DialogWitch();
+            }
             else {
                 player.Move(dx, dy);
             }
