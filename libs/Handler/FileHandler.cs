@@ -10,6 +10,7 @@ public static class FileHandler
     // private static string savePath = "../savedGame.json";
     private static int levelNumber = 1;
     private static string levelPath = "../Level" + levelNumber + ".json";
+    private static string dialogPath = "../Dialog.json"; // Path to the Dialog JSON file
 
     static FileHandler()
     {
@@ -18,14 +19,6 @@ public static class FileHandler
 
     private static void Initialize()
     {
-        // if (File.Exists(savePath))
-        // {
-        //     filePath = savePath;
-        // }
-        // else {
-        //     filePath = levelPath;
-        // }
-
         filePath = levelPath;
     }
 
@@ -68,6 +61,24 @@ public static class FileHandler
         catch (Exception ex)
         {
             throw new Exception($"Error reading JSON file: {ex.Message}");
+        }
+    }
+
+    public static string GetDialog(string key)
+    {
+        try
+        {
+            string jsonContent = File.ReadAllText(dialogPath);
+            dynamic dialogs = JsonConvert.DeserializeObject(jsonContent);
+            return dialogs[key];
+        }
+        catch (FileNotFoundException)
+        {
+            throw new FileNotFoundException($"Messages JSON file not found at path: {dialogPath}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error reading messages JSON file: {ex.Message}");
         }
     }
 }

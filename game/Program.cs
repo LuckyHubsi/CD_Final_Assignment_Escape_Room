@@ -19,6 +19,8 @@ class Program
         var engine = GameEngine.Instance;
         var inputHandler = InputHandler.Instance;
 
+        engine.ShowMainMenu();
+
         while (true) {
 
             engine.Setup();

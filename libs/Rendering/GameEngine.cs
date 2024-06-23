@@ -62,24 +62,6 @@ public sealed class GameEngine
         _focusedObject = gameObjects.OfType<Player>().First();
     }
 
-
-    public void SaveGame() {
-        List<GameObject> lastSnapshot = gameObjectSnapshots.Last!.Value;
-
-        // create object which can be 'changed' during runtime -> can add map width and height during game playing
-        dynamic gameData = new System.Dynamic.ExpandoObject();
-        gameData.gameObjects = lastSnapshot;
-        gameData.map = new {
-            width = map.MapWidth,
-            height = map.MapHeight
-        };
-
-        string snapshotJson = JsonConvert.SerializeObject(gameData);
-        string filepath = "../savedGame.json";
-        File.WriteAllText(filepath, snapshotJson); 
-    }
-
-
     public Map GetMap() {
         return map;
     }
@@ -122,8 +104,9 @@ public sealed class GameEngine
         InitializeDialogWindow();
 
         Render();
-
-        dialog.Draw(" How to play ", "Use the arrow keys to move around. The goal is to get the key to the door before the timer runs out. Good Luck! Press any key to start...");
+        string tutorialMessage = FileHandler.GetDialog("TutorialMessage");
+        string tutorialHeader = FileHandler.GetDialog("TutorialHeader");
+        dialog.Draw(" "+ tutorialHeader +" ", tutorialMessage);
         Console.ReadKey(true);
     }
    
@@ -143,8 +126,10 @@ public sealed class GameEngine
             }
             Console.WriteLine();
         }
-       
-        dialog.Draw(" Hints ", "Not available yet...");
+
+        string hintsHeader = FileHandler.GetDialog("HintsHeader");
+        string hintsMessage = FileHandler.GetDialog("HintsMessage");
+        dialog.Draw(" " + hintsHeader + " ",hintsMessage);
     }
     
     // Method to create GameObject using the factory from clients
@@ -179,6 +164,22 @@ public sealed class GameEngine
         }
     }
 
+    public void ShowMainMenu() {
+        InitializeDialogWindow();
+        Console.Clear();
+
+        string mainMenuHeader = FileHandler.GetDialog("MainMenuHeader");
+        string mainMenuMessage = FileHandler.GetDialog("MainMenuMessage");
+        dialog.Draw(" " + mainMenuHeader + " ", mainMenuMessage);
+
+        while (true) {
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+            if (keyInfo.Key == ConsoleKey.Enter) {
+                break;
+            }
+        }
+    }
+
     public bool WinCheck() {
 
         if (!gameObjects.OfType<Door>().Any()) {
@@ -190,7 +191,10 @@ public sealed class GameEngine
     }
 
     public void WinLevel() {
-        dialog.Draw(" Congratulations  ", "You have completed this level. Press any key to restart...");
+        FileHandler.ChangeLevel();
+        string winMessage = FileHandler.GetDialog("WinMessage");
+        string winHeader = FileHandler.GetDialog("WinHeader");
+        dialog.Draw(" " + winHeader + " ", winMessage);
     }
 
     public bool LoseCheck() {
@@ -198,7 +202,9 @@ public sealed class GameEngine
     }
 
     public void LoseLevel(){
-        dialog.Draw(" Better luck next time  ", "Too bad, your time ran out. Press any key to restart...");
+        string loseHeader = FileHandler.GetDialog("LoseHeader");
+        string loseMessage = FileHandler.GetDialog("LoseMessage");
+        dialog.Draw(" "+ loseHeader + " ", loseMessage);
        
     }
 
